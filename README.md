@@ -1,4 +1,5 @@
-# ESP32-S3 CSI 7-Pose Classification (IIC Lab)
+# ESP32-S3 CSI 7-Pose Classification 
+
 
 WiFi CSI(Channel State Information) 기반 사용자 자세(pose) 인식 프로젝트 중,
 **ESP32-S3 플랫폼(2번)** 데이터에 대한 모델 학습 결과 정리.
