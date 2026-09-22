@@ -21,7 +21,7 @@
 
 - **session 1 → train(80%)/val(20%), class-stratified**
 - **session 2 → test**
-- 이 분할은 영신님/팀 확인 전까지 임시치다. AP팀의 jun(train/val)/sin(test) subject-holdout 방식을 세션 단위로 본뜬 것이며, session 1/2가 실제로 "다른 날/다른 사람" 세션인지 "같은 세션 반복 촬영"인지에 따라 해석이 달라진다. **확인 후 재분할이 필요할 수 있음.**
+- 이 분할은 영신님이 확인 전까지의 임시치다. AP팀의 jun(train/val)/sin(test) subject-holdout 방식을 세션 단위로 본뜬 것이며, session 1/2가 실제로 "다른 날/다른 사람" 세션인지 "같은 세션 반복 촬영"인지에 따라 해석이 달라진다. **확인 후 재분할이 필요할 수 있음.**
 - train 266 / val 66 / test 310 (세션2에서 스킵된 파일이 있어 test가 350이 아니라 310)
 
 ## 학습 설정 (AP 팀 90.2% 레시피와 동일한 원칙 적용)
