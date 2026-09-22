@@ -231,3 +231,44 @@ confusion matrix상 sitting_still은 다른 어떤 클래스와도 전혀 혼동
 ### 산출물
 
 - 스크립트: `build_ap_sitting_still_substitute.py` (전처리/대체), `runs/esp32_ap_sitting_substitute_20260922/` (학습 결과, metrics.json, test_confusion_matrix.csv)
+
+## 크로스 하드웨어 홀드아웃 실험 (ESP32 ↔ AP) — 2026-09-22
+
+### 배경 / 목적
+
+프로젝트의 핵심 목표 중 하나: "AP로 뽑든 ESP32로 뽑든, 두 장비를 병행해도 비슷하게 잘 나오는 모델." 앞선 AP-substitute 실험(단일 클래스 대체)은 도메인 치팅 가능성 때문에 이 목표를 제대로 검증하지 못했으므로, 훨씬 더 엄격한 테스트로 **한 장비로만 학습하고 완전히 다른 장비로만 평가**하는 실험을 진행했다.
+
+### 방법
+
+- ESP32 전체(사람 구분 없이 642개, 7클래스)와 AP 전체(jun+sin, 700개, 7클래스, ESP32 shape로 리샘플링: subcarrier 256→192, 시간축 512→128)를 각각 하나의 "도메인 풀"로 사용
+- **방향 A**: ESP32 전체 → train/val(85/15, class-stratified), AP 전체 → test
+- **방향 B**: AP 전체 → train/val(85/15, class-stratified), ESP32 전체 → test
+- normalization 통계는 학습에 쓴 도메인의 train split에서만 계산하고, **test 도메인에는 그 통계를 그대로 적용** (실제 배포 상황과 동일한 진짜 zero-shot 전이 조건 — test 도메인 통계를 미리 알지 못한다고 가정)
+- 아키텍처/하이퍼파라미터는 기존 실험과 동일 (feature=iq_amp, epochs=80, patience=15, batch norm)
+
+### 결과
+
+| 방향 | val 최고 | test 전체 | 비고 |
+|---|---:|---:|---|
+| ESP32 학습 → AP 테스트 | 78.6% | **14.3%** | 모든 AP 테스트 샘플을 `empty` 하나로만 예측 (그 외 6클래스 전부 0%) |
+| AP 학습 → ESP32 테스트 | 97.1% | **15.6%** | 모든 ESP32 테스트 샘플을 `walking_in_place` 하나로만 예측 (그 외 6클래스 전부 0%) |
+
+14.3%, 15.6%는 정확히 "7클래스 중 1개만 항상 찍었을 때" 나오는 값(1/7=14.3%)과 일치한다 — 즉 모델이 반대쪽 장비 데이터를 받자마자 한 가지 클래스로만 붕괴(collapse)했다는 뜻이다.
+
+### 해석
+
+- val은 78~97%로 정상적으로 높게 나오지만, 장비가 바뀌는 순간 test 정확도가 랜덤 수준(14~16%)으로 완전히 붕괴한다.
+- 이는 "약간의 성능 저하"가 아니라 **현재 파이프라인(리샘플링만 하고 그대로 학습)이 하드웨어 간 전이를 전혀 하지 못한다는 것을 명확히 보여주는 결과**다.
+- 앞서 문헌 조사(Widar3.0, DATTA, Wi-SFDAGR 등)에서 예상했던 대로, CSI 크로스하드웨어 일반화는 도메인 적응 기법 없이는 되지 않는다는 것이 이번 실험으로 직접 확인됨.
+- 따라서 "AP로 뽑든 ESP32로 뽑든 병행해도 잘 나옴"이라는 목표는, **현재 상태 기준으로는 전혀 달성되지 않았다.** 이 목표를 실제로 달성하려면 단순 리샘플링을 넘어선 도메인 적응(domain adaptation) 기법(예: 도메인 불변 feature 설계, domain-adversarial 학습, 소량의 타깃 도메인 fine-tuning 등)이 반드시 필요하다.
+
+### 산출물
+
+- 스크립트: `resample_ap_full_to_esp32shape.py` (AP 7클래스 전체 리샘플링), `build_cross_hardware_holdout.py` (train/test 도메인 분리 전처리)
+- 학습 결과: `runs/cross_hw_A_train_esp_test_ap_20260922/`, `runs/cross_hw_B_train_ap_test_esp_20260922/` (metrics.json, test_confusion_matrix.csv)
+
+### 다음 단계 제안
+
+1. 이 결과를 교수님께 있는 그대로 보고: "현재 파이프라인은 하드웨어 간 zero-shot 전이가 사실상 0%(랜덤 수준)이며, 목표 달성을 위해서는 도메인 적응 기법이 필요함"
+2. 도메인 불변 전처리(per-sample 정규화, 상대적 변화량 기반 feature 등) 적용 후 같은 크로스 하드웨어 홀드아웃을 재실행해 개선 여부 확인
+3. 소량의 타깃 도메인 데이터로 fine-tuning했을 때 전이 성능이 얼마나 회복되는지 확인 (실무적으로 더 현실적인 시나리오)
