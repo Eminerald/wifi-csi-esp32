@@ -1,4 +1,4 @@
-# ESP32-S3 CSI 7-Pose Classification
+# ESP32-S3 CSI 7-Pose Classification 
 
 WiFi CSI(Channel State Information) 기반 사용자 자세(pose) 인식 프로젝트 중,
 **ESP32-S3 플랫폼(2번)** 데이터에 대한 모델 학습 결과 정리.
@@ -75,6 +75,20 @@ CSI 데이터의 전처리 파이프라인 구축부터 모델 학습, 그리고
 | standing_still | 30~70% |
 | walking | 20~36% |
 | walking_in_place | 60~98% |
+
+### 클래스별 test 정확도 (capture-holdout, 두 사람 섞어 무작위 분할 기준)
+
+위 표(피험자 홀드아웃)와 아래 표(capture-holdout)는 **같은 클래스라도 분할 방식이 다르면 정확도가 완전히 달라질 수 있음**을 보여준다 — 특히 `standing_look_around`는 피험자 홀드아웃에서 0%지만 capture-holdout에서는 100%로, 새로운 사람에게는 전혀 일반화되지 않지만 학습에 등장한 사람 안에서는 아주 잘 구분된다는 뜻이다.
+
+| 클래스 | 정확도 |
+|---|---:|
+| empty | 100.0% |
+| sitting_pick_up | 92.9% |
+| sitting_still | 87.5% |
+| standing_look_around | **100.0%** |
+| standing_still | 85.7% |
+| walking | 57.1% |
+| walking_in_place | 100.0% |
 
 ## 핵심 발견
 
@@ -154,4 +168,4 @@ wifi-csi/
 ```
 
 ---
-*작성: 2026-09-21 *
+*작성: 2026-09-21
