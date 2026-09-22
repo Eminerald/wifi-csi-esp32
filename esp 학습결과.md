@@ -55,13 +55,6 @@
 3. **현재 이 결과를 "ESP32 최종 성능 90%대"라고 팀에 보고하면 안 된다.** 이 수치는 session1/session2를 train/test로 나눈 잠정 분할 기준의 test 정확도(52.3%)이며, val 정확도(90.9%)와 크게 다르다.
 4. 700개 중 58개(8.3%) pcap이 전처리 단계에서 스킵되었다 (`too_few_records`) — 데이터 자체의 캡처 품질 이슈일 수 있어 영신님께 확인이 필요하다.
 
-## 다음 단계 제안
-
-1. **영신님께 session 1/2의 실제 의미(같은 사람 반복 촬영인지, 다른 날/다른 사람인지) 확인** — 이것이 확인되어야 split을 올바르게 재구성할 수 있다.
-2. `standing_look_around` 클래스의 confusion 패턴을 직접 확인 (`test_confusion_matrix.csv`).
-3. 스킵된 58개 pcap 목록 확인 (`esp32_windows_20260921/preprocess_summary.json`의 `skipped` 필드) — 특정 클래스/세션에 몰려 있는지 확인.
-4. session1 내부에서만 train/val/test를 나눠(capture-holdout, AP의 1차 방식과 동일) 비교 실험을 추가하면, 지금의 큰 val-test 격차가 "session1↔session2 분포차이" 때문인지 "일반적 일반화 성능"인지 구분할 수 있다.
-
 ## 산출물 위치
 
 - 전처리 데이터: `~/Desktop/wifi-csi/esp32_windows_20260921/`
