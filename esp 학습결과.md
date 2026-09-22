@@ -62,12 +62,6 @@
 - 학습 스크립트: `~/Desktop/wifi-csi/train_csi_cnn_esp32.py`
 - 학습 결과: `~/Desktop/wifi-csi/runs/esp32_iq_amp_baseline_20260921/`, `~/Desktop/wifi-csi/runs/esp32_iq_only_baseline_20260921/`
 
-## 추가 진단 실험 — 2026-09-21 (영신님 확인 후)
-
-영신님 확인: `esp32s3_cap/1`, `/2`는 세션이 아니라 **사람 구분**이다 (폴더 순서: 사람구분 → 행동구분 → 캡처데이터 순서). AP 데이터의 jun/sin 폴더도 동일한 성격.
-
-즉 처음 실험은 우연이 아니라 **정확히 AP와 동일한 방식의 피험자 홀드아웃(subject holdout)**이었다.
-
 ### 비교 실험: 두 사람을 섞은 capture-holdout
 
 - 목적: "피험자 홀드아웃에서 나온 큰 val-test 격차(90.9%→52.3%)가 데이터/전처리 버그 때문인지, 진짜 사람 간 일반화 문제인지" 확인
