@@ -267,8 +267,3 @@ confusion matrix상 sitting_still은 다른 어떤 클래스와도 전혀 혼동
 - 스크립트: `resample_ap_full_to_esp32shape.py` (AP 7클래스 전체 리샘플링), `build_cross_hardware_holdout.py` (train/test 도메인 분리 전처리)
 - 학습 결과: `runs/cross_hw_A_train_esp_test_ap_20260922/`, `runs/cross_hw_B_train_ap_test_esp_20260922/` (metrics.json, test_confusion_matrix.csv)
 
-### 다음 단계 제안
-
-1. 이 결과를 교수님께 있는 그대로 보고: "현재 파이프라인은 하드웨어 간 zero-shot 전이가 사실상 0%(랜덤 수준)이며, 목표 달성을 위해서는 도메인 적응 기법이 필요함"
-2. 도메인 불변 전처리(per-sample 정규화, 상대적 변화량 기반 feature 등) 적용 후 같은 크로스 하드웨어 홀드아웃을 재실행해 개선 여부 확인
-3. 소량의 타깃 도메인 데이터로 fine-tuning했을 때 전이 성능이 얼마나 회복되는지 확인 (실무적으로 더 현실적인 시나리오)
