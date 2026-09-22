@@ -199,7 +199,7 @@ AP(1번)는 동일한 피험자 홀드아웃 방식(jun=train, sin=test)으로�
 
 ### 배경 / 목적
 
-교수님 제안: ESP32 자체 `sitting_still` 데이터가 온도 과열로 손상됐으니, 같은 사람(jun/사람1, sin/사람2)이 AP(AX7800M-6E)로 캡처한 `sitting_still` 데이터를 ESP32 학습에 대신 넣어보면 어떻겠냐는 아이디어. "표본 손실/품질 문제"가 sitting_still 정확도 불안정의 진짜 원인인지 확인하기 위한 실험.
+ESP32 자체 `sitting_still` 데이터가 온도 과열로 손상됐으니, 같은 사람(jun/사람1, sin/사람2)이 AP(AX7800M-6E)로 캡처한 `sitting_still` 데이터를 ESP32 학습에 대신 넣어보면 어떻겠냐는 아이디어. "표본 손실/품질 문제"가 sitting_still 정확도 불안정의 진짜 원인인지 확인하기 위한 실험.
 
 ### 방법
 
